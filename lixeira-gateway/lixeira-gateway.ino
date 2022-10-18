@@ -18,10 +18,9 @@ void loop() {
   if(packet != ""){
     String arr[4];
     gateway.parse_packet(packet, arr);
-    
-    gateway.json_encode(arr);
+    Serial.println( gateway.json_packet_encode(arr));
   }
-   
+
  
   delay(1000);
 }

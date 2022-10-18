@@ -4,7 +4,7 @@
 class LoraData {
 private:
   const uint8_t qtdSensors = 4;
- 
+  uint32_t packetSize;
   const String jsonKeys[3] = {
     "\":{\"distance\":\"",
     "\",\"angle\":\"",
@@ -17,7 +17,8 @@ public:
   String recive_lora_data();
   void send_lora_data(String);
   String json_decode(String);
-  String json_encode(String*);
+  String json_packet_encode(String*);
+  String json_encode(String, String);
   void parse_packet(String, String*);
 };
 
@@ -25,15 +26,13 @@ void LoraData::parse_packet(String packet, String * arr) {
 
   uint8_t count = 0;
   
-  for (uint32_t i = 0; i < ARRAY_SIZE(packet); i++) {
-      
-      
+  
+  for (uint32_t i = 0; i < this->packetSize; i++) {
       if ((char)packet[i] != '/') {
         arr[count] += packet[i];
       } else {
         count++;
       }
-     
     }  
 }
 
@@ -50,6 +49,7 @@ String LoraData::recive_lora_data() {
   }
 
   // read packet
+  this->packetSize = packetSize;
   while (LoRa.available()) {
     received += (char)LoRa.read();
   }
@@ -58,17 +58,20 @@ String LoraData::recive_lora_data() {
   return data;
 }
 
-String LoraData::json_encode(String * arr) {
-  String jsonObj;
-  jsonObj += "\"" + arr[0];
-  for(int i = 0; i < this->qtdSensors; i++){
-    jsonObj += this->jsonKeys[i] + arr[i+1];
+String LoraData::json_packet_encode(String * arr) {
+  String jsonPacket;
+  jsonPacket += "\"" + arr[0];
+  for(int i = 0; i < this->qtdSensors-1; i++){
+    jsonPacket += this->jsonKeys[i] + arr[i+1];
   }
-  // Serial.println(jsonObj);
-  return jsonObj;
-
+  return jsonPacket + "\"}";
 }
 
+
+
+String LoraData::json_encode(String jsonPacket, String jsonObj) {
+
+}
 
 void LoraData::send_lora_data(String loraData) {
   Serial.print("Sending packet: ");

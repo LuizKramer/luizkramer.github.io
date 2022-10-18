@@ -1,9 +1,9 @@
 #include "heltec.h"
-#define ARRAY_SIZE(array) ((sizeof(array))/(sizeof(array[0])))
+#include "CONSTANTS.h"
 
 class LoraData {
 private:
-  const uint8_t qtdSensors = 4;
+  const uint8_t qtdSensors = QTD_SENSORS;
   uint32_t packetSize;
   const String jsonKeys[3] = {
     "\":{\"distance\":\"",

@@ -10,6 +10,10 @@ private:
     "\",\"angle\":\"",
     "\",\"battery\":\""
   };
+  String devicesJson[DEVICES];
+  String devices[DEVICES];
+  uint8_t activeDevices = 0;
+  String jsonPacket;
 
 
 
@@ -18,11 +22,12 @@ public:
   void send_lora_data(String);
   String json_decode(String);
   String json_packet_encode(String*);
-  String json_encode(String, String);
+  String json_encode();
   void parse_packet(String, String*);
+  bool verify_existing(String a);
 };
 
-void LoraData::parse_packet(String packet, String * arr) {
+void LoraData::parse_packet(String packet, String arr[QTD_SENSORS]) {
 
   uint8_t count = 0;
   
@@ -33,7 +38,10 @@ void LoraData::parse_packet(String packet, String * arr) {
       } else {
         count++;
       }
-    }  
+    }
+
+    String aux =this->json_packet_encode(arr);
+    Serial.println(aux);
 }
 
 
@@ -60,17 +68,43 @@ String LoraData::recive_lora_data() {
 
 String LoraData::json_packet_encode(String * arr) {
   String jsonPacket;
-  jsonPacket += "\"" + arr[0];
-  for(int i = 0; i < this->qtdSensors-1; i++){
-    jsonPacket += this->jsonKeys[i] + arr[i+1];
+  if(!verify_existing(arr[0]) &&  (this->activeDevices < DEVICES)){
+    
+    jsonPacket += "\"" + arr[0];
+    for(int i = 0; i < this->qtdSensors-1; i++){
+      jsonPacket += this->jsonKeys[i] + arr[i+1];
+    }
+    jsonPacket += "\"}";
+    devicesJson[this->activeDevices] = jsonPacket;
+    devices[this->activeDevices] = arr[0];
+    this->activeDevices++;
+    this->jsonPacket = jsonPacket;
   }
-  return jsonPacket + "\"}";
+
+  return jsonPacket;
 }
 
+bool LoraData::verify_existing(String a){
+  for(int i =0; i< this->activeDevices; i++){
+    if(a == this->devices[i]){
+      return true;
+    }
+  }
+  return false;
+}
 
+String LoraData::json_encode() {
+  if (this->activeDevices == 0)
+    return "";
+  Serial.println(this->activeDevices);
+  String json = "{"; 
+  for(int i =0; i < this->activeDevices -1; i++){
+    json += this->devicesJson[i] + ",";
+  }
+  json += this->devicesJson[this->activeDevices-1] + "}";
+  Serial.println(json);
 
-String LoraData::json_encode(String jsonPacket, String jsonObj) {
-
+  return json;
 }
 
 void LoraData::send_lora_data(String loraData) {

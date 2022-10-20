@@ -18,12 +18,8 @@ void loop() {
   packet = gateway.recive_lora_data();
  
   if(packet != ""){
-    String arr[4];
-    gateway.parse_packet(packet, arr);
-    if(gateway.verify_existing(arr[0])){
-      jsonPacket = gateway.json_packet_encode(arr);
-      gateway.json_encode();
-    }
+    gateway.parse_packet(packet);
+        Serial.println(gateway.json_encode());
   }
 
  

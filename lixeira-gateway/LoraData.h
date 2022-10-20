@@ -13,9 +13,6 @@ private:
   String devicesJson[DEVICES];
   String devices[DEVICES];
   uint8_t activeDevices = 0;
-  String jsonPacket;
-
-
 
 public:
   String recive_lora_data();
@@ -23,14 +20,14 @@ public:
   String json_decode(String);
   String json_packet_encode(String*);
   String json_encode();
-  void parse_packet(String, String*);
+  String parse_packet(String);
   bool verify_existing(String a);
 };
 
-void LoraData::parse_packet(String packet, String arr[QTD_SENSORS]) {
+String LoraData::parse_packet(String packet) {
 
   uint8_t count = 0;
-  
+  String arr[QTD_SENSORS];
   
   for (uint32_t i = 0; i < this->packetSize; i++) {
       if ((char)packet[i] != '/') {
@@ -40,8 +37,9 @@ void LoraData::parse_packet(String packet, String arr[QTD_SENSORS]) {
       }
     }
 
-    String aux =this->json_packet_encode(arr);
-    Serial.println(aux);
+    return this->json_packet_encode(arr);
+    
+    
 }
 
 
@@ -68,7 +66,7 @@ String LoraData::recive_lora_data() {
 
 String LoraData::json_packet_encode(String * arr) {
   String jsonPacket;
-  if(!verify_existing(arr[0]) &&  (this->activeDevices < DEVICES)){
+  if(!verify_existing(arr[0]) && this->activeDevices < DEVICES){
     
     jsonPacket += "\"" + arr[0];
     for(int i = 0; i < this->qtdSensors-1; i++){
@@ -78,7 +76,6 @@ String LoraData::json_packet_encode(String * arr) {
     devicesJson[this->activeDevices] = jsonPacket;
     devices[this->activeDevices] = arr[0];
     this->activeDevices++;
-    this->jsonPacket = jsonPacket;
   }
 
   return jsonPacket;
@@ -96,13 +93,11 @@ bool LoraData::verify_existing(String a){
 String LoraData::json_encode() {
   if (this->activeDevices == 0)
     return "";
-  Serial.println(this->activeDevices);
   String json = "{"; 
   for(int i =0; i < this->activeDevices -1; i++){
     json += this->devicesJson[i] + ",";
   }
   json += this->devicesJson[this->activeDevices-1] + "}";
-  Serial.println(json);
 
   return json;
 }

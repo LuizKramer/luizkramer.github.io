@@ -22,6 +22,7 @@ public:
   String json_encode();
   String parse_packet(String);
   bool verify_existing(String a);
+  void clear_data();
 };
 
 String LoraData::parse_packet(String packet) {
@@ -100,6 +101,15 @@ String LoraData::json_encode() {
   json += this->devicesJson[this->activeDevices-1] + "}";
 
   return json;
+}
+
+void LoraData::clear_data(){
+  
+  for(int i = 0; i < this->activeDevices; i++ ){
+    this->devicesJson[i] = "";
+    this->devices[i] = "";
+  }
+  this->activeDevices = 0;
 }
 
 void LoraData::send_lora_data(String loraData) {

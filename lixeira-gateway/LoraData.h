@@ -5,10 +5,12 @@ class LoraData {
 private:
   const uint8_t qtdSensors = QTD_SENSORS;
   uint32_t packetSize;
-  const String jsonKeys[3] = {
+  const String jsonKeys[QTD_SENSORS] = {
     "\":{\"distance\":\"",
+    "\",\"battery\":\"",
     "\",\"angle\":\"",
-    "\",\"battery\":\""
+    "\",\"latitude\":\"",
+    "\",\"longitude\":\""
   };
   String devicesJson[DEVICES];
   String devices[DEVICES];
@@ -23,7 +25,12 @@ public:
   String parse_packet(String);
   bool verify_existing(String a);
   void clear_data();
+  uint8_t get_active_devices();
 };
+
+uint8_t LoraData::get_active_devices(){
+  return this->activeDevices;
+}
 
 String LoraData::parse_packet(String packet) {
 
@@ -37,7 +44,7 @@ String LoraData::parse_packet(String packet) {
         count++;
       }
     }
-
+   
     return this->json_packet_encode(arr);
     
     
@@ -62,6 +69,7 @@ String LoraData::recive_lora_data() {
   }
 
   String data = received;
+  Serial.println(data);
   return data;
 }
 

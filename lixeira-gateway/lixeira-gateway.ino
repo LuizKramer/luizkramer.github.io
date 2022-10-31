@@ -2,8 +2,12 @@
 #include "LoraData.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "CONSTANTS.h"
+#include <elapsedMillis.h>
 
-const char* serverName = "http://192.168.1.54:81/api/lixeira/create_multiple.php";
+elapsedMillis elapsedTime;
+
+const char* serverName = "http://192.168.1.66:81/api/lixeira/create_multiple.php";
 
 const char* ssid = "SMCTI";
 const char* password = "SMCTI@6080";
@@ -20,8 +24,8 @@ int httpResponseCode;
 
 void setup() {
   //WIFI Kit series V1 not support Vext control
-  Heltec.begin(false /*DisplayEnable Enable*/, true /*Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
-
+  
+  Serial.begin(115200);
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
   while (WiFi.status() != WL_CONNECTED) {
@@ -31,6 +35,7 @@ void setup() {
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
+  Heltec.begin(false /*DisplayEnable Enable*/, true /*Heltec.LoRa Disable*/, true /*Serial Enable*/, true /*PABOOST Enable*/, BAND /*long BAND*/);
 }
 
 void loop() {
@@ -38,10 +43,12 @@ void loop() {
 
   if (packet != "") {
     gateway.parse_packet(packet);
-
     httpRequestData = gateway.json_encode();
-
-    if (WiFi.status() == WL_CONNECTED) {
+    Serial.println(httpRequestData);
+    Serial.println(gateway.get_active_devices());
+    Serial.println((WiFi.status()));
+    if (WiFi.status() == WL_CONNECTED && (gateway.get_active_devices() == DEVICES || elapsedTime > 15000)) {
+      
       WiFiClient client;
       HTTPClient http;
       // Domain name with URL path or IP address with path
@@ -59,6 +66,7 @@ void loop() {
         Serial.println(httpResponseCode);
         Serial.println();
       }
+      elapsedTime = 0;
     }
 
 

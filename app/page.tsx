@@ -7,6 +7,7 @@ import { Projects } from "@/components/sections/Projects";
 import { Skills } from "@/components/sections/Skills";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { profile } from "@/data/profile";
+import Image from "next/image";
 
 export default function Home() {
   return <>
@@ -31,6 +32,6 @@ export default function Home() {
         </div>
       </div></section>
     </main>
-    <footer className="footer shell"><span>LK.</span><p>© {new Date().getFullYear()} Luiz Kramer</p><a href="#inicio">Voltar ao topo ↑</a></footer>
+    <footer className="footer shell"><Image className="footer-logo" src="/logo-lk-mark.png" alt="Luiz Kramer" width={1254} height={1254}/><p>© {new Date().getFullYear()} Luiz Kramer</p><a href="#inicio">Voltar ao topo ↑</a></footer>
   </>;
 }

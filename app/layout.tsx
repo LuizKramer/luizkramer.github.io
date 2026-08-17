@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import "./globals.css";
 import { profile } from "@/data/profile";
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: { title: `${profile.shortName} | Engenharia de Computação e IoT`, description: "Hardware, firmware, comunicação, cloud e software em sistemas completos.", type: "website", locale: "pt_BR" },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="pt-BR"

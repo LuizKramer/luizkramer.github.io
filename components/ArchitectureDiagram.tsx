@@ -1,0 +1,2 @@
+import { ArrowRight } from "lucide-react";
+export function ArchitectureDiagram({layers}:{layers:readonly string[]}){return <div className="architecture" aria-label={`Arquitetura: ${layers.join(" para ")}`}>{layers.map((layer,i)=><div className="architecture-step" key={layer}><span className="step-number">{String(i+1).padStart(2,"0")}</span><strong>{layer}</strong>{i<layers.length-1&&<ArrowRight className="architecture-arrow" size={16} aria-hidden="true"/>}</div>)}</div>}

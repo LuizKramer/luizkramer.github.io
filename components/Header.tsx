@@ -1,0 +1,3 @@
+import { MobileNav, ThemeToggle } from "./ThemeControls";
+const links = [{href:"#sobre",label:"Sobre"},{href:"#experiencia",label:"Experiência"},{href:"#projetos",label:"Projetos"},{href:"#tecnologias",label:"Tecnologias"},{href:"#contato",label:"Contato"}] as const;
+export function Header(){return <header className="site-header"><a className="monogram" href="#inicio" aria-label="Ir para o início">LK<span>.</span></a><nav className="desktop-nav" aria-label="Navegação principal">{links.map(l=><a key={l.href} href={l.href}>{l.label}</a>)}</nav><div className="header-actions"><ThemeToggle/><MobileNav links={links}/></div></header>}

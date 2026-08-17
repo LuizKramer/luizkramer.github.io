@@ -1,0 +1,2 @@
+import { skillGroups } from "@/data/skills"; import { SectionTitle } from "../ui/SectionTitle";
+export function Skills(){return <section className="section shell" id="tecnologias"><SectionTitle eyebrow="04 / FERRAMENTAS" title="Stack técnica" description="Tecnologias organizadas pelo papel que desempenham no sistema."/><div className="skills-list">{skillGroups.map((g,i)=><div className="skill-row" key={g.category}><span>0{i+1}</span><h3>{g.category}</h3><p>{g.items.join(" · ")}</p></div>)}</div></section>}
